@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 public class ZheShangMain2 {
 
     static RemoteWebDriver driver ;
-    static final String ZJZH = "2070012282";
-    static final String PASSWD = "842479";
+    static final String ZJZH = "zijinzhanghao";
+    static final String PASSWD = "mima";
 
     public static void main(String[] args) throws Exception {
         initChromeDriver();
