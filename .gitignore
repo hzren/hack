@@ -1,0 +1,14 @@
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.iml
+*.ipr
+*.sh
+target
+classes
+/bin
+.*
+!.gitignore
