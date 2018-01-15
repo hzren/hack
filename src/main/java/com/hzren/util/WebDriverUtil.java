@@ -28,13 +28,13 @@ public class WebDriverUtil {
         System.setProperty("webdriver.ie.driver.logfile", "E://dev_soft//web_driver//IEDriver.log");
 
         //init chrome configuration
-        System.setProperty("webdriver.chrome.driver", "E://dev_soft//web_driver//chromedriver.exe");
+        System.setProperty("webdriver.chrome.driver", "/Users/hongzhenren/Applications/chromedriver");
     }
 
     public static ChromeDriver newChromeDriver(){
         ChromeOptions options = new ChromeOptions();
         // TODO
-        options.setBinary("C://Users//hzren//AppData//Local//Google//Chrome//Application//chrome.exe");
+        //options.setBinary("C://Users//hzren//AppData//Local//Google//Chrome//Application//chrome.exe");
         String setUA = "-user-agent=" + HttpUtil.HEADER_IE;
         options.addArguments("-incognito", setUA);
         ChromeDriver driver = new ChromeDriver(options);

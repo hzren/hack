@@ -2,19 +2,13 @@ package com.hzren.hack.fang;
 
 import com.hzren.http.Request;
 import com.hzren.http.SimpleHttpExecutor;
-import com.hzren.util.WebDriverUtil;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
