@@ -1,5 +1,6 @@
 package com.hzren.hack.fang;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class WorkFlow {
     public static void main(String[] args) throws Exception {
 
         while (true){
-            LocalTime now = LocalTime.now();
+            LocalDateTime now = LocalDateTime.now();
             String tday = now.format(DateTimeFormatter.BASIC_ISO_DATE);
             if (SENDED.contains(tday)){
                 Thread.sleep(30L * 60 * 1000);
