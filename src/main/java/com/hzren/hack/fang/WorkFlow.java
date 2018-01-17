@@ -36,7 +36,7 @@ public class WorkFlow {
 
             Dailydeal.saveDailyDeal();
             Thread.sleep(1000L);
-            SendKsls.doPostKsls();
+            SendKsls.doPostKsls(tday);
             SENDED.add(tday);
         }
 

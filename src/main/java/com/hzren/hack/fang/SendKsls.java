@@ -62,10 +62,10 @@ public class SendKsls {
         System.out.println(cookieStore);
     }
 
-    static void doPostKsls() throws Exception{
+    static void doPostKsls(String tday) throws Exception{
         initCookie();
-        String tday = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
-        Document document = Jsoup.parse(EXECUTOR.requestAsSting(Request.Get("http://zzhzbbs.zjol.com.cn/forum.php?mod=viewthread&tid=21475826&page=1")));
+        String thread = "http://zzhzbbs.zjol.com.cn/thread-21476149-1-1.html";
+        Document document = Jsoup.parse(EXECUTOR.requestAsSting(Request.Get(thread)));
         Element form = document.selectFirst("#fastpostform");
         String url = form.absUrl("action") + "&inajax=1";
         String formahash = form.select("input[name=formhash]").val();
@@ -83,7 +83,7 @@ public class SendKsls {
         Request request = Request.Post(url)
                 .addHeader("Upgrade-Insecure-Requests", "1")
                 .addHeader("Origin", "http://zzhzbbs.zjol.com.cn")
-                .addHeader("Referer", "http://zzhzbbs.zjol.com.cn/forum.php?mod=viewthread&tid=21475826&page=1")
+                .addHeader("Referer", thread)
                 .bodyFormGBK(
                 new BasicNameValuePair("formhash", formahash),
                 new BasicNameValuePair("usesig", usesig),
@@ -99,7 +99,11 @@ public class SendKsls {
 
 
     public static void main(String[] args) throws Exception {
-        doPostKsls();
+        //String tday = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
+        //doPostKsls("20180114");
+        doPostKsls("20180115");
+        Thread.sleep(4000);
+        doPostKsls("20180116");
     }
 
 }
