@@ -29,6 +29,9 @@ public class Dailydeal {
         String date = LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE);
         String url = "http://www.hzfc.gov.cn/scxx/";
         Document document = Jsoup.parse(new URL("http://www.hzfc.gov.cn/scxx/"), 1000);
+        System.out.println("----HTML-------" + date + "--------START------");
+        System.out.println(document.toString());
+        System.out.println("----HTML-------" + date + "--------END------");
         Elements elements = document.getElementsByTag("img");
         for (Element element : elements) {
             String address = element.absUrl("src");
