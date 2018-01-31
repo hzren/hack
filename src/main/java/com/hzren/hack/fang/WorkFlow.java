@@ -1,44 +1,57 @@
 package com.hzren.hack.fang;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class WorkFlow {
-    public static final int START = 22;
-    public static final int END = 23;
-
-    public static final Set<String> SENDED = new HashSet<>();
+    private static final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
 
     public static void main(String[] args) throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        int hour = now.getHour();
+        int sendHour = 22;
 
-        while (true){
-            LocalDateTime now = LocalDateTime.now();
-            String tday = now.format(DateTimeFormatter.BASIC_ISO_DATE);
-            if (SENDED.contains(tday)){
-                Thread.sleep(30L * 60 * 1000);
-                continue;
-            }
-            int hour = now.getHour();
-            int minute = now.getMinute();
-            if (!(hour >= START && hour < END)){
-                Thread.sleep(30L * 60 * 1000);
-                continue;
-            }
-            if (!(minute >= 0 && minute < 30)){
-                Thread.sleep(30L * 60 * 1000);
-                continue;
-            }
-
-            Dailydeal.saveDailyDeal();
-            Thread.sleep(1000L);
-            SendKsls.doPostKsls(tday);
-            SENDED.add(tday);
-        }
-
+        executor.scheduleAtFixedRate(saveImgTask, 0, 1, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(sendToKsls, sendHour - hour, 24, TimeUnit.HOURS);
     }
+
+    public static final Runnable saveImgTask = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                Dailydeal.saveDailyDeal();
+            }catch (Exception e){
+                LocalDateTime now = LocalDateTime.now();
+                System.out.println("---------" + now.toString() + "保存图片出错------------");
+                e.printStackTrace();
+            }
+        }
+    };
+
+    public static final Runnable sendToKsls = new Runnable() {
+
+        public final Set<String> SENDED = new HashSet<>();
+
+        @Override
+        public void run() {
+            try {
+                LocalDateTime now = LocalDateTime.now();
+                String tday = now.format(DateTimeFormatter.BASIC_ISO_DATE);
+                if (SENDED.contains(tday)){
+                    return;
+                }
+                SendKsls.doPostKsls(tday);
+                SENDED.add(tday);
+            }catch (Exception e){
+                LocalDateTime now = LocalDateTime.now();
+                System.out.println("---------" + now.toString() + "发帖到口水出错------------");
+                e.printStackTrace();
+            }
+        }
+    };
 }

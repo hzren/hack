@@ -52,7 +52,7 @@ public class Dailydeal {
             }
 
             byte[] data = EXECUTOR.requestAsByte(Request.Get(address));
-            FileUtils.writeByteArrayToFile(new File(savepath), data, true);
+            FileUtils.writeByteArrayToFile(new File(savepath), data, false);
         }
 
     }
