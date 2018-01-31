@@ -18,6 +18,9 @@ public class WorkFlow {
 
         executor.scheduleAtFixedRate(saveImgTask, 0, 1, TimeUnit.HOURS);
         executor.scheduleAtFixedRate(sendToKsls, sendHour - hour, 24, TimeUnit.HOURS);
+        while (true){
+            Thread.sleep(1000 * 1000);
+        }
     }
 
     public static final Runnable saveImgTask = new Runnable() {
