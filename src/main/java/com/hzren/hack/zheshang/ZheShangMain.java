@@ -20,9 +20,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.Time;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -45,11 +43,11 @@ public class ZheShangMain {
     public static final String HARD_INFO = "INTEL SSDPEKKF256G7H(00000_00_010000_00_04E2D5_7C_0B63A4_0D.1)|TOSHIBA MQ01ACF050(7 17WD7MTC)";
     private static final String OP_STATION = "SDPC/{nw_ip}/" + LOCAL_IP + "/" + MAC + "/" + HARD_INFO + "/pc/cpu/hdp/ser/v2.0";
 
-    private static final String ZJZH = "资金账号";
-    private static final String PASSWD = "密码";
+    private static final String ZJZH = "2070012282";
+    private static final String PASSWD = "842479";
 
-    private static final String APPLY_STOCK = "300721";
-    private static final String APPLY_PRICE = "26.47";
+    private static final String APPLY_STOCK = "002938";
+    private static final String APPLY_PRICE = "26.00";
     private static final String APPLY_AMOUNT = "100";
 
     private static String APPLY_EXCHANGE_TYPE;

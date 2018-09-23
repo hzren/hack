@@ -3,12 +3,9 @@ package com.hzren.hack.hengtai;
 import com.hzren.http.Request;
 import com.hzren.http.SimpleHttpExecutor;
 import org.apache.http.entity.ContentType;
-import sun.misc.BASE64Encoder;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 /**
  * @author hzren

@@ -51,6 +51,7 @@ public class HttpUtil {
         Iterator<org.openqa.selenium.Cookie> iterator = sCookies.iterator();
         while (iterator.hasNext()) {
             org.openqa.selenium.Cookie next =  iterator.next();
+            System.out.println(next.getName() + " : " + next.getValue());
             BasicClientCookie cookie = new BasicClientCookie(next.getName(), next.getValue());
             cookie.setDomain(next.getDomain());
             cookie.setExpiryDate(next.getExpiry());

@@ -13,8 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * 默认 FAIL_ON_UNKNOWN_PROPERTIES,ALLOW_SINGLE_QUOTES,GMT时间格式
- * 
  * @author chan
  * @version $Id: JsonUtil.java, v 0.1 2015年10月30日 下午3:15:00 chan Exp $
  */
@@ -27,7 +25,6 @@ public class JsonUtil {
         MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        // 默认时间格式
         MAPPER.setDateFormat(format);
     }
 
