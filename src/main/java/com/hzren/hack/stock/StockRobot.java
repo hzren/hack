@@ -1,7 +1,6 @@
 package com.hzren.hack.stock;
 
 import com.hzren.hack.stock.guoyuan.GuoYuanService;
-import net.bytebuddy.asm.Advice;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -25,6 +24,8 @@ public class StockRobot {
     public static void main(String[] args) throws Exception {
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         GuoYuanService guoYuanService = new GuoYuanService();
+        TxStockSelectService selectMain = new TxStockSelectService();
+
         guoYuanService.login();
         //10s刷新一次页面
         executorService.scheduleAtFixedRate(new RefreshPageTask(guoYuanService), 10, 10, TimeUnit.SECONDS);
@@ -40,7 +41,7 @@ public class StockRobot {
             }
             //9.15-9.25
             if (now.compareTo(_9_25) < 0){
-                List<StockInfo> infos = TencentStockSelectMain.getAllLimitUpStocks();
+                List<StockInfo> infos = selectMain.getAllLimitUpStocks();
                 System.out.println(now + "--查询涨停板");
                 for (StockInfo info : infos) {
                     System.out.println(info.getArea() + info.getCode() + " -- " + info.getName() + " -- " + info.getPrice() + " --" + info.getWaitAmount());
@@ -50,7 +51,7 @@ public class StockRobot {
             }
             //9.25 -- 11.30
             if (now.compareTo(_11_30) < 0){
-                StockInfo info = TencentStockSelectMain.filterStocks();
+                StockInfo info = selectMain.filterStocks();
                 if (info != null){
                     executorService.submit(new BuyStockTask(guoYuanService, info));
                     hasBuy = true;
@@ -64,14 +65,14 @@ public class StockRobot {
             }
             //13.00 -- 15.00
             if (now.compareTo(_15_00) < 0){
-                StockInfo info = TencentStockSelectMain.filterStocks();
+                StockInfo info = selectMain.filterStocks();
                 if (info != null){
                     executorService.submit(new BuyStockTask(guoYuanService, info));
                     hasBuy = true;
                 }
                 continue;
             }else {
-                TencentStockZtSaveMain.doSaveLimitUpCodes();
+                TxStockZtSaveMain.doSaveLimitUpCodes();
                 return;
             }
 

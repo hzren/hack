@@ -52,6 +52,17 @@ public class StockInfo {
     //总市值
     private BigDecimal stockValue;
 
+    @Setter
+    //流通市值
+    private BigDecimal unlimitStockValue;
+
+    //外盘
+    @Setter
+    private int outer;
+    //内盘
+    @Setter
+    private int inner;
+
 
 
 }

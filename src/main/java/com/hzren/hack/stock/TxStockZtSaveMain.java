@@ -9,7 +9,7 @@ import java.util.List;
  * @author tuomasi
  * Created on 2018/9/21.
  */
-public class TencentStockZtSaveMain {
+public class TxStockZtSaveMain {
 
     private static HashSet<String> lastDayCodes = new HashSet<>(StockUtils.getLastDayZtCode());
 
@@ -29,7 +29,7 @@ public class TencentStockZtSaveMain {
     }
 
     public static void doSaveLimitUpCodes() throws Exception{
-        List<StockInfo> all = TencentStockSelectMain.getAllLimitUpStocks();
+        List<StockInfo> all = new TxStockSelectService().getAllLimitUpStocks();
         List<String> codes = new ArrayList<>(all.size());
         for (StockInfo info : all) {
             codes.add(info.getArea() + info.getCode());

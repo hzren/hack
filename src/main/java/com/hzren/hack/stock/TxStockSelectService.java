@@ -17,21 +17,22 @@ import java.util.List;
  * @author tuomasi
  * Created on 2018/9/21.
  */
-public class TencentStockSelectMain {
+public class TxStockSelectService {
 
-    private static SimpleHttpExecutor executor = new SimpleHttpExecutor(null, null);
+    private SimpleHttpExecutor executor = new SimpleHttpExecutor(null, null);
 
     public static void main(String[] args) throws Exception {
+        TxStockSelectService selectMain = new TxStockSelectService();
         for (int i = 1; i < 10; i++){
-            filterStocks();
+            selectMain.filterStocks();
         }
     }
 
-    public static StockInfo filterStocks() throws Exception{
+    public StockInfo filterStocks() throws Exception{
         long start = System.currentTimeMillis();
         List<StockInfo> allLimitUp = getAllLimitUpStocks();
-        List<StockInfo> filterInfos = TencentStockZtSaveMain.rejectLastDayLimitUpStock(allLimitUp);
-        StockInfo target = select(filterInfos);
+        List<StockInfo> filterInfos = TxStockZtSaveMain.rejectLastDayLimitUpStock(allLimitUp);
+        StockInfo target = select(allLimitUp);
         if (target != null){
             System.out.println(target.getName() + " : " + target.getCode() + " : " + target.getPrice());
         }else {
@@ -42,7 +43,7 @@ public class TencentStockSelectMain {
         return target;
     }
 
-    private static StockInfo select(List<StockInfo> stockInfos){
+    private StockInfo select(List<StockInfo> stockInfos){
         StockInfo res = null;
         BigDecimal rate = BigDecimal.ZERO;
         for (StockInfo stockInfo : stockInfos) {
@@ -62,7 +63,7 @@ public class TencentStockSelectMain {
 
 
 
-    public static List<StockInfo> getAllLimitUpStocks() throws Exception{
+    public List<StockInfo> getAllLimitUpStocks() throws Exception{
         List<StockInfo> sh = getAreaTopLimitStocks(StockEnums.AREA_SH);
         List<StockInfo> sz = getAreaTopLimitStocks(StockEnums.AREA_SZ);
         ArrayList<StockInfo> all = new ArrayList<>();
@@ -71,12 +72,12 @@ public class TencentStockSelectMain {
         return all;
     }
 
-    public static List<StockInfo> getAreaTopLimitStocks(String area) throws Exception{
+    public List<StockInfo> getAreaTopLimitStocks(String area) throws Exception{
         List<StockInfo> result = new ArrayList<>();
         int page = 1, pageSize = 20, lastPageSize = pageSize;
         while (lastPageSize == pageSize){
-            List<String> codes = TencentStockSelectMain.getRankStocks(area, page, pageSize);
-            List<StockInfo> limitUp = TencentStockSelectMain.doQueryLimitUpStocks(codes);
+            List<String> codes = getRankStocks(area, page, pageSize);
+            List<StockInfo> limitUp = doQueryLimitUpStocks(codes);
             for (StockInfo info : limitUp) {
                 result.add(info);
             }
@@ -86,7 +87,7 @@ public class TencentStockSelectMain {
         return result;
     }
 
-    public static List<String> getRankStocks(String area, int page,int size) throws Exception{
+    public List<String> getRankStocks(String area, int page,int size) throws Exception{
         Request request = Request.Get("http://stock.gtimg.cn/data/view/rank.php?" +
                 "t=ranka" + area + "/chr" +
                 "&p=" + page +
@@ -105,7 +106,7 @@ public class TencentStockSelectMain {
         return Arrays.asList(codeArray);
     }
 
-    public static List<StockInfo> queryLimitUpStocks(List<String> codes) throws Exception{
+    public List<StockInfo> queryLimitUpStocks(List<String> codes) throws Exception{
         List<StockInfo> result = new ArrayList<>();
         int start = 0, end = 10;
         for (;;){
@@ -123,7 +124,7 @@ public class TencentStockSelectMain {
         return result;
     }
 
-    public static List<StockInfo> doQueryLimitUpStocks(List<String> codes) throws Exception{
+    public List<StockInfo> doQueryLimitUpStocks(List<String> codes) throws Exception{
         String url = "http://qt.gtimg.cn/q=" + String.join(",", codes) + "&r=" + System.currentTimeMillis();
         Request request = Request.Get(url);
         request.addHeader("Referer", "http://stockapp.finance.qq.com/ms/pushiframe.html?_u=" + System.currentTimeMillis());
@@ -141,7 +142,6 @@ public class TencentStockSelectMain {
             BigDecimal nowPerice = new BigDecimal(infos[3]);
             BigDecimal yPerice = new BigDecimal(infos[4]);
             int dealAmount = Integer.valueOf(infos[6]);
-            BigDecimal stockValue =new BigDecimal(infos[20]).divide(BigDecimal.valueOf(10000));
             //排除不是涨停的
             BigDecimal ztPerice = StockUtils.zhangTingPerice(yPerice);
             if (ztPerice.compareTo(nowPerice) != 0){
@@ -150,10 +150,13 @@ public class TencentStockSelectMain {
             StockInfo si = new StockInfo(code, stockName);
             si.setPrice(nowPerice);
             si.setYPerice(yPerice);
-            si.setExchange(new BigDecimal(infos[34]));
+            si.setExchange(new BigDecimal(infos[38]));
             si.setWaitAmount(Integer.parseInt(infos[10]));
             si.setDealAmount(dealAmount);
-            si.setStockValue(stockValue);
+            si.setStockValue(new BigDecimal(infos[45]));
+            si.setUnlimitStockValue(new BigDecimal(infos[44]));
+            si.setOuter(Integer.parseInt(infos[7]));
+            si.setInner(Integer.parseInt(infos[8]));
             stocks.add(si);
         }
         return stocks;
