@@ -1,7 +1,10 @@
-package com.hzren.hack.stock;
+package com.hzren.hack.stock.up_limit;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.hzren.hack.stock.api.StockEnums;
+import com.hzren.hack.stock.api.StockInfo;
+import com.hzren.hack.stock.api.StockUtils;
 import com.hzren.http.Request;
 import com.hzren.http.SimpleHttpExecutor;
 
@@ -32,24 +35,32 @@ public class TxStockSelectService {
         long start = System.currentTimeMillis();
         List<StockInfo> allLimitUp = getAllLimitUpStocks();
         List<StockInfo> filterInfos = TxStockZtSaveMain.rejectLastDayLimitUpStock(allLimitUp);
-        StockInfo target = select(allLimitUp);
+        StockInfo target = select(filterInfos);
         if (target != null){
             System.out.println(target.getName() + " : " + target.getCode() + " : " + target.getPrice());
         }else {
             System.out.println("-------未发现符合条件的股票代码-------");
         }
         long end = System.currentTimeMillis();
-        System.out.println("筛选耗时:" + (end - start) + "ms");
+        System.out.println("筛选股票耗时:" + (end - start) + "ms");
         return target;
     }
 
-    private StockInfo select(List<StockInfo> stockInfos){
+    public StockInfo select(List<StockInfo> stockInfos){
         StockInfo res = null;
         BigDecimal rate = BigDecimal.ZERO;
         for (StockInfo stockInfo : stockInfos) {
+            //忽略新股第一天涨停
+            BigDecimal ztPerice = StockUtils.zhangTingPerice(stockInfo.getYPerice());
+            if (ztPerice.compareTo(stockInfo.getPrice()) < 0){
+                continue;
+            }
             if (stockInfo.getDealAmount() == 0){
                 res = stockInfo;
                 rate = BigDecimal.valueOf(Integer.MAX_VALUE);
+            }
+            if (BigDecimal.valueOf(stockInfo.getDealAmount()).compareTo(BigDecimal.ZERO) == 0){
+                continue;
             }
             BigDecimal siRate = BigDecimal.valueOf(stockInfo.getWaitAmount())
                     .divide(BigDecimal.valueOf(stockInfo.getDealAmount()), 2, RoundingMode.HALF_DOWN);
@@ -144,7 +155,8 @@ public class TxStockSelectService {
             int dealAmount = Integer.valueOf(infos[6]);
             //排除不是涨停的
             BigDecimal ztPerice = StockUtils.zhangTingPerice(yPerice);
-            if (ztPerice.compareTo(nowPerice) != 0){
+            //每涨停忽略
+            if (ztPerice.compareTo(nowPerice) > 0){
                 continue;
             }
             StockInfo si = new StockInfo(code, stockName);

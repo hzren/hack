@@ -1,7 +1,9 @@
-package com.hzren.hack.stock;
+package com.hzren.hack.stock.up_limit;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.hzren.hack.stock.api.StockInfo;
+import com.hzren.hack.stock.api.StockUtils;
 import com.hzren.http.Request;
 import com.hzren.http.SimpleHttpExecutor;
 

@@ -1,5 +1,6 @@
-package com.hzren.hack.stock;
+package com.hzren.hack.stock.api;
 
+import com.hzren.hack.stock.api.StockEnums;
 import lombok.Getter;
 import lombok.Setter;
 

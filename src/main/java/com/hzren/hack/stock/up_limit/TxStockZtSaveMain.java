@@ -1,4 +1,8 @@
-package com.hzren.hack.stock;
+package com.hzren.hack.stock.up_limit;
+
+import com.alibaba.fastjson.JSON;
+import com.hzren.hack.stock.api.StockInfo;
+import com.hzren.hack.stock.api.StockUtils;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -36,6 +40,7 @@ public class TxStockZtSaveMain {
         }
         System.out.println("保存涨停板代码,个数:" + codes.size());
         System.out.println("涨停板代码:" + String.join(",", codes));
+        System.out.println(JSON.toJSON(all.get(0)));
         StockUtils.saveZtCode(codes);
     }
 
