@@ -33,6 +33,7 @@ public class WebDriverUtil {
         System.setProperty("webdriver.chrome.driver", "E://dev_soft//web_driver//chromedriver.exe");
         //init firefox configuration
         System.setProperty("webdriver.gecko.driver", "E://dev_soft//web_driver//geckodriver.exe");
+        System.setProperty("webdriver.chrome.driver", "/Users/hongzhenren/Applications/chromedriver");
     }
 
     public static ChromeDriver newChromeDriver(){
@@ -41,6 +42,9 @@ public class WebDriverUtil {
         options.setBinary("C://Program Files (x86)//Google//Chrome//Application//chrome.exe");
 //        String setUA = "-user-agent=" + HttpUtil.HEADER_IE;
 //        options.addArguments("-incognito", setUA);
+        //options.setBinary("C://Users//hzren//AppData//Local//Google//Chrome//Application//chrome.exe");
+        String setUA = "-user-agent=" + HttpUtil.HEADER_IE;
+        options.addArguments("-incognito", setUA);
         ChromeDriver driver = new ChromeDriver(options);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         return driver;
