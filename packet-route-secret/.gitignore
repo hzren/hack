@@ -1,0 +1,14 @@
+target
+bin
+.DS_Store
+hm-webapp/src/main
+hm-webapp/src/main/webapp/resources
+# Eclipse output and metadata (users should run `gradle eclipse` to generate)
+.classpath
+.project
+.settings
+.springBeans
+jacoco.exec
+*.iml
+*.ipr
+*.iws
