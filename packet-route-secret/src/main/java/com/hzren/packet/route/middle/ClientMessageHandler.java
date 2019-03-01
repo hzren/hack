@@ -1,10 +1,8 @@
-package com.hzren.packet.route.front;
+package com.hzren.packet.route.middle;
 
-import com.hzren.packet.route.utils.Util;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,8 +25,7 @@ public class ClientMessageHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
-        log.info("转发来自Client,index:" + index + ",长度:" + buf.readableBytes());
-        NioSocketChannel targetChannel = FrontServerChannelHolder.proxyChannelMap.get(index);
-        targetChannel.writeAndFlush(Util.negative(buf, targetChannel.alloc()));
+        log.info("Front-Proxy的消息,index:" + index + ",长度:" + buf.readableBytes());
+        MiddleServerChannelHolder.remoteChannelMap.get(index).writeAndFlush(buf);
     }
 }

@@ -1,4 +1,4 @@
-package com.hzren.packet.route.backend;
+package com.hzren.packet.route.middle;
 
 import com.hzren.packet.route.Config;
 import io.netty.bootstrap.Bootstrap;
@@ -16,40 +16,40 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created on 2018/12/3.
  */
 @Slf4j
-public class BackendServerChannelHolder {
+public class MiddleServerChannelHolder {
     private static AtomicInteger ID_GEN = new AtomicInteger();
-
-    public static ConcurrentHashMap<Integer, NioSocketChannel> proxyChannelMap = new ConcurrentHashMap<>();
-    public static ConcurrentHashMap<Integer, NioSocketChannel> remoteChannelMap = new ConcurrentHashMap<>();
     public static NioEventLoopGroup GROUP = new NioEventLoopGroup(2);
 
-    public static int putProxyChannel(NioSocketChannel socketChannel){
+    public static ConcurrentHashMap<Integer, NioSocketChannel> remoteChannelMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Integer, NioSocketChannel> clientChannelMap = new ConcurrentHashMap<>();
+
+
+    public static int putClientChannel(NioSocketChannel socketChannel){
         int id = ID_GEN.incrementAndGet();
-        proxyChannelMap.put(id, socketChannel);
+        clientChannelMap.put(id, socketChannel);
         return id;
     }
 
-    public static void newRemoteChannel(int index){
-        log.info("新创建一条Target链接:" + index);
+    public static void newProxyChannel(int id){
+        log.info("创建一条Target链接");
         Bootstrap bootstrap = new Bootstrap().group(GROUP)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 2000)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                 .channel(NioSocketChannel.class)
-                .handler(new RemoteChannelInitializer(index));
+                .handler(new RemoteChannelInitializer(id));
 
         try {
             ChannelFuture future = bootstrap
-                    .handler(new RemoteChannelInitializer(index))
-                    .connect(Config.SS_IP, Config.SS_PORT).sync();
+                    .connect(Config.SPS_IP, Config.SPS_PORT).sync();
             future.awaitUninterruptibly();
             if (future.isDone() && future.isSuccess()){
                 NioSocketChannel channel = (NioSocketChannel) future.channel();
-                remoteChannelMap.put(index, channel);
+                remoteChannelMap.put(id, channel);
                 return;
             }
             log.error("链接失败");
             throw new RuntimeException("Connect target server fail");
         } catch (Exception e) {
-            log.error("新建Target通道失败:" + index, e);
+            log.error("新建Target通道失败", e);
             throw new RuntimeException(e);
         }
     }

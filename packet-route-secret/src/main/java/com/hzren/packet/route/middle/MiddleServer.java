@@ -1,4 +1,4 @@
-package com.hzren.packet.route.front;
+package com.hzren.packet.route.middle;
 
 import com.hzren.packet.route.Config;
 import io.netty.bootstrap.ServerBootstrap;
@@ -16,14 +16,14 @@ import lombok.extern.slf4j.Slf4j;
  * Created on 2018/12/3.
  */
 @Slf4j
-public class FrontServer implements Config {
+public class MiddleServer implements Config {
 
     public static final NioEventLoopGroup worker = new NioEventLoopGroup(2);
 
-    private ServerBootstrap clientServerSb;
+    private ServerBootstrap middleServerSb;
 
-    public void startClientServer(){
-        this.clientServerSb = startServer("Client", Config.CS_PORT, new ClientChannelInitializer());
+    public void startMiddleServer(){
+        this.middleServerSb = startServer("Middle", Config.MS_PORT, new ClientChannelInitializer());
     }
 
     private ServerBootstrap startServer(String type, int port, ChannelInitializer<NioSocketChannel> initializer){
@@ -50,7 +50,7 @@ public class FrontServer implements Config {
     }
 
     public void close(){
-        clientServerSb.group().shutdownGracefully();
+        middleServerSb.group().shutdownGracefully();
     }
 
 }

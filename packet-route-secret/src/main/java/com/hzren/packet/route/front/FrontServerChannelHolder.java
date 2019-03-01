@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class FrontServerChannelHolder {
     private static AtomicInteger ID_GEN = new AtomicInteger();
-    public static NioEventLoopGroup GROUP = new NioEventLoopGroup(1);
+    public static NioEventLoopGroup GROUP = new NioEventLoopGroup(2);
 
     public static ConcurrentHashMap<Integer, NioSocketChannel> proxyChannelMap = new ConcurrentHashMap<>();
     public static ConcurrentHashMap<Integer, NioSocketChannel> clientChannelMap = new ConcurrentHashMap<>();
@@ -33,13 +33,13 @@ public class FrontServerChannelHolder {
     public static void newProxyChannel(int id){
         log.info("创建一条Target链接");
         Bootstrap bootstrap = new Bootstrap().group(GROUP)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                 .channel(NioSocketChannel.class)
                 .handler(new ProxyChannelInitializer(id));
 
         try {
             ChannelFuture future = bootstrap
-                    .connect(Config.SPS_IP, Config.SPS_PORT).sync();
+                    .connect(Config.MS_IP, Config.MS_PORT).sync();
             future.awaitUninterruptibly();
             if (future.isDone() && future.isSuccess()){
                 NioSocketChannel channel = (NioSocketChannel) future.channel();

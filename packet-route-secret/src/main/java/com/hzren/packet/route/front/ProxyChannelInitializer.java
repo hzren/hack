@@ -1,9 +1,7 @@
 package com.hzren.packet.route.front;
 
 import com.hzren.packet.route.Config;
-import com.hzren.packet.route.base.ByteBufTrimHandler;
-import com.hzren.packet.route.base.ExceptionHandler;
-import com.hzren.packet.route.base.HeartBeatHandler;
+import com.hzren.packet.route.base.*;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -26,12 +24,17 @@ public class ProxyChannelInitializer extends ChannelInitializer<NioSocketChannel
     protected void initChannel(NioSocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
         ch.closeFuture().addListener(new ProxyChannelCloseListener(index));
-
-        pipeline.addLast("idleStateHandler", new IdleStateHandler(10, 10, 30));
+        //out
         pipeline.addLast("trimHandler", new ByteBufTrimHandler());
-        pipeline.addLast("messageDecodeHandler", new LengthFieldBasedFrameDecoder(Config.MAX_PACKET_LENGTH, 0, 4, 0,4 ));
-        pipeline.addLast("proxyMessageHandler", new ProxyMessageHandler(index));
+        pipeline.addLast("idleStateHandler", new IdleStateHandler(10, 10, 30));
+        pipeline.addLast("secretMsgEncoder", new SecretMsgEncoder());
+        //in
         pipeline.addLast("heartBeatHandler", new HeartBeatHandler());
+        //in
+        pipeline.addLast("messageDecodeHandler", new LengthFieldBasedFrameDecoder(Config.MAX_PACKET_LENGTH, 0, 4, 0,4 ));
+        pipeline.addLast("secretMsgDecoder", new SecretMsgDecoder(index));
+        pipeline.addLast("proxyMessageHandler", new ProxyMessageHandler(index));
+
         pipeline.addLast("exceptionHandler", new ExceptionHandler(index));
     }
 }

@@ -1,16 +1,11 @@
 package com.hzren.packet.route.front;
 
-import com.hzren.packet.route.Config;
+import com.hzren.packet.route.utils.Util;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.MessageToMessageDecoder;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpMessage;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 /**
  * @author tuomasi
@@ -28,21 +23,9 @@ public class ProxyMessageHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         ByteBuf buf = (ByteBuf) msg;
-        int secretKey = buf.readInt();
-        if (secretKey == 0){
-            log.info("收到心跳包,index:" + index);
-            return;
-        }
-        if (secretKey != Config.SECRET_KEY){
-            ctx.channel().close();
-            return;
-        }
-        if (buf.readableBytes() == 0){
-            log.info("收到心跳包,index:" + index);
-            return;
-        }
-        log.info("转发来自Proxy的消息,index:" + index + ",长度:" + buf.readableBytes());
-        FrontServerChannelHolder.clientChannelMap.get(index).writeAndFlush(buf);
+        log.info("转发来自Middle-Proxy的消息,index:" + index + ",长度:" + buf.readableBytes());
+        NioSocketChannel targetChannel = FrontServerChannelHolder.clientChannelMap.get(index);
+        targetChannel.writeAndFlush(Util.negative(buf, targetChannel.alloc()));
     }
 
 }

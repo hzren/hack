@@ -19,9 +19,9 @@ public class ClientChannelInitializer extends ChannelInitializer<NioSocketChanne
         ch.closeFuture().addListener(new ClientChannelCloseListener(id));
         //建立代理通道
         FrontServerChannelHolder.newProxyChannel(id);
-        //规整消息
+        //out
         pipeline.addLast("trimHandler", new ByteBufTrimHandler());
-        //路由消息
+        //in
         pipeline.addLast("clientMessageHandler", new ClientMessageHandler(id));
         pipeline.addLast("exceptionHandler", new ExceptionHandler(id));
     }

@@ -18,22 +18,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BackendServer implements Config {
 
+    public static final NioEventLoopGroup worker = new NioEventLoopGroup(2);
+
     private ServerBootstrap bootstrap;
 
     public void startProxyServer(){
-        this.bootstrap = startServer("ProxyChannelServer", Config.SPS_PORT, 1, new ProxyChannelInitializer());
+        this.bootstrap = startServer("ProxyChannelServer", Config.SPS_PORT, new ProxyChannelInitializer());
     }
 
-    private ServerBootstrap startServer(String type, int port, int threadNum, ChannelInitializer<NioSocketChannel> initializer){
-        log.info("Starting " + type + ", workerThread num : " + threadNum);
-        NioEventLoopGroup worker = new NioEventLoopGroup(threadNum);
+    private ServerBootstrap startServer(String type, int port, ChannelInitializer<NioSocketChannel> initializer){
+        log.info("Starting " + type);
         worker.setIoRatio(100);
         try
         {
             ServerBootstrap bootstrap = new ServerBootstrap()
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
-                    .childOption(ChannelOption.WRITE_SPIN_COUNT, 3);
-            bootstrap.childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 1024 * 1024);
+                    .childOption(ChannelOption.WRITE_SPIN_COUNT, 10);
+            bootstrap.childOption(ChannelOption.WRITE_BUFFER_HIGH_WATER_MARK, 10 * 1024 * 1024);
             bootstrap.group(worker, worker)
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.WARN))

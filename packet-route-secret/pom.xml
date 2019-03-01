@@ -129,6 +129,15 @@
 							<!--</jvmSettings>-->
 						</program>
 						<program>
+							<id>middle</id>
+							<mainClass>com.hzren.packet.route.middle.StartMiddleServerMain</mainClass>
+							<!--<jvmSettings>-->
+							<!--<extraArguments>-->
+							<!--<extraArgument>-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9999</extraArgument>-->
+							<!--</extraArguments>-->
+							<!--</jvmSettings>-->
+						</program>
+						<program>
 							<id>backend</id>
 							<mainClass>com.hzren.packet.route.backend.StartBackendMain</mainClass>
 						</program>

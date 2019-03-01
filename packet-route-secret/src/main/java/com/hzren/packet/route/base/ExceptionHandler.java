@@ -19,7 +19,9 @@ public class ExceptionHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.error("Channel未知异常, index:" + index, cause);
+        String remoteAddress = ctx.channel().remoteAddress().toString();
+        String localAddress = ctx.channel().localAddress().toString();
+        log.error("Channel未知异常, index:" + index + ",localAddress:" + localAddress + ",remoteAddress:" + remoteAddress, cause);
         ctx.channel().close();
     }
 }
