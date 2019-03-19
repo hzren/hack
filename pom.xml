@@ -175,8 +175,8 @@
                     <useWildcardClassPath>true</useWildcardClassPath>
                     <programs>
                         <program>
-                            <id>startup</id>
-                            <mainClass>com.hzren.hack.fang.WorkFlow</mainClass>
+                            <id>lianjia</id>
+                            <mainClass>com.hzren.hack.lian_jia.LianjiaMain</mainClass>
                         </program>
                     </programs>
                 </configuration>
